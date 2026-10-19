@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alecrim Dourado | Registro de Vendas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Ajuste fino para o tema Dourado */
+        .theme-primary-text { color: #b45309; } /* amber-700 */
+        .theme-primary-bg { background-color: #d97706; } /* amber-600 */
+        .theme-primary-border { border-color: #d97706; } /* amber-600 */
+        .theme-secondary-text { color: #92400e; } /* amber-800 */
+        .theme-hover-bg:hover { background-color: #fffbeb; } /* amber-50 */
+        
+        /* Gráficos: Manter cores de alerta/sucesso, mas ajustar a linha principal */
+        :root {
+            --color-venda: #d97706; /* Dourado */
+            --color-cmv: #e11d48;   /* Rose (Vermelho de custo) */
+            --color-lucro: #16a34a; /* Verde de lucro */
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-12">
+
+    <!-- Cabeçalho -->
+    <header class="bg-amber-600 text-white shadow-md py-6 mb-8">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-leaf text-amber-100"></i> Alecrim Dourado | Painel de Vendas
+                </h1>
+                <p class="text-amber-50 text-sm">Registre suas vendas e acompanhe seus resultados.</p>
+            </div>
+            <button onclick="exportarDados()" class="bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow">
+                <i class="fa-solid fa-download mr-1"></i> Baixar Backup JSON
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Coluna Esquerda: Formulário e Guia do GitHub -->
+        <div class="space-y-6">
+            <!-- Formulário -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-cart-plus theme-primary-text"></i> Nova Venda
+                </h2>
+                <form id="vendaForm" onsubmit="registrarVenda(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Produto / Massa / Tipo</label>
+                        <select id="produtoSelect" onchange="atualizarMolhos()" required class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none">
+                            <option value="">Selecione o produto...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Molho</label>
+                        <select id="molhoSelect" onchange="atualizarInfoProduto()" required class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none">
+                            <option value="">Selecione o molho...</option>
+                        </select>
+                    </div>
+
+                    <!-- Resumo rápido calculado -->
+                    <div id="cardResumoItem" class="bg-amber-50 rounded-xl p-3 border border-amber-100 text-xs space-y-1 hidden">
+                        <div class="flex justify-between"><span>Preço de Venda:</span> <strong id="lblPreco" class="text-amber-900 font-semibold">R$ 0,00</strong></div>
+                        <div class="flex justify-between"><span>Custo (CMV):</span> <strong id="lblCmv" class="text-rose-600 font-semibold">R$ 0,00</strong></div>
+                        <div class="flex justify-between"><span>Lucro Estimado:</span> <strong id="lblLucro" class="text-green-700 font-semibold">R$ 0,00</strong></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Data da Venda</label>
+                        <input type="date" id="dataVenda" required class="w-full rounded-lg border border-slate-300 p-2.5 text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:outline-none">
+                    </div>
+
+                    <button type="submit" class="w-full theme-primary-bg hover:bg-amber-700 text-white font-medium py-2.5 rounded-lg transition shadow-sm cursor-pointer">
+                        Registrar Venda
+                    </button>
+                </form>
+            </div>
+
+            <!-- Instruções GitHub Pages -->
+            <div class="bg-slate-100 border border-slate-200 rounded-2xl p-5 text-xs text-slate-600 space-y-2">
+                <h3 class="font-bold flex items-center gap-1.5 text-slate-800 text-sm">
+                    <i class="fa-brands fa-github"></i> Como colocar no GitHub Pages:
+                </h3>
+                <ol class="list-decimal pl-4 space-y-1">
+                    <li>Copie todo este código e salve num arquivo com o exato nome <b>index.html</b>.</li>
+                    <li>Crie um repositório público gratuito no <a href="https://github.com" target="_blank" class="underline font-semibold text-amber-700">GitHub</a>.</li>
+                    <li>Faça o upload do arquivo <code>index.html</code> para a raiz do repositório.</li>
+                    <li>Vá em <b>Settings > Pages</b>, selecione a branch <code>main</code> / <code>root</code> e clique em <b>Save</b>.</li>
+                    <li>Pronto! O link gerado poderá ser aberto em qualquer celular ou computador.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Coluna Direita: Dashboard e Rankings -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Cards de Resumo Geral -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Faturamento Total</span>
+                    <h3 id="totalFaturamento" class="text-2xl font-bold theme-secondary-text mt-1">R$ 0,00</h3>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Custo Total (CMV)</span>
+                    <h3 id="totalCmv" class="text-2xl font-bold text-rose-600 mt-1">R$ 0,00</h3>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Lucro Líquido Total</span>
+                    <h3 id="totalLucro" class="text-2xl font-bold text-green-700 mt-1">R$ 0,00</h3>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
+                <h2 class="text-lg font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line theme-primary-text"></i> Desempenho Diário
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 mb-2">Vendas Brutas (R$) por Dia</p>
+                        <div class="relative h-48"><canvas id="graficoVendas"></canvas></div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 mb-2">Custo das Vendas / CMV (R$) por Dia</p>
+                        <div class="relative h-48"><canvas id="graficoCmv"></canvas></div>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-xs font-semibold text-slate-500 mb-2">Lucro Líquido Diário (R$)</p>
+                    <div class="relative h-48"><canvas id="graficoLucro"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Rankings -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Top 5 Produtos -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-medal text-amber-500"></i> Top 5 Produtos
+                    </h3>
+                    <ul id="listTopProdutos" class="text-xs space-y-2 text-slate-600 divide-y divide-slate-100">
+                        <li class="pt-1 text-slate-400 italic">Nenhuma venda registrada</li>
+                    </ul>
+                </div>
+                <!-- Top 5 Molhos -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-fire text-orange-500"></i> Top 5 Molhos
+                    </h3>
+                    <ul id="listTopMolhos" class="text-xs space-y-2 text-slate-600 divide-y divide-slate-100">
+                        <li class="pt-1 text-slate-400 italic">Nenhuma venda registrada</li>
+                    </ul>
+                </div>
+                <!-- Top 1 Dia -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-star text-amber-600"></i> Top 1 Dia de Vendas
+                        </h3>
+                        <div id="topDiaCard" class="text-xs text-slate-600 space-y-1 mt-4">
+                            <span class="text-slate-400 italic">Sem registros ainda</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Histórico de Vendas Recentes -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left theme-primary-text"></i> Histórico Recente
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-100 text-slate-700 uppercase">
+                            <tr>
+                                <th class="p-3 rounded-l-lg">Data</th>
+                                <th class="p-3">Produto / Massa</th>
+                                <th class="p-3">Molho</th>
+                                <th class="p-3">Venda</th>
+                                <th class="p-3">CMV</th>
+                                <th class="p-3">Lucro</th>
+                                <th class="p-3 rounded-r-lg text-center">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaHistorico" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="7" class="p-4 text-center text-slate-400 italic">Nenhuma venda registrada até o momento.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Script de Gestão e Lógica -->
+    <script>
+        // Base de dados extraída diretamente da planilha de CMV e Preços
+        const baseProdutos = [
+            { produto: "Talharim - Cenoura", molho: "Bechamel", cmv: 4.32, preco: 20.90 },
+            { produto: "Talharim - Beterraba", molho: "Bechamel", cmv: 4.32, preco: 20.90 },
+            { produto: "Talharim - Tradicional", molho: "Bechamel", cmv: 4.52, preco: 20.90 },
+            { produto: "Talharim - Couve", molho: "Bechamel", cmv: 11.36, preco: 20.90 },
+            { produto: "Talharim - Cenoura", molho: "Tomate", cmv: 4.75, preco: 20.90 },
+            { produto: "Talharim - Beterraba", molho: "Tomate", cmv: 4.75, preco: 20.90 },
+            { produto: "Talharim - Tradicional", molho: "Tomate", cmv: 4.96, preco: 20.90 },
+            { produto: "Talharim - Couve", molho: "Tomate", cmv: 11.80, preco: 20.90 },
+            { produto: "Talharim - Cenoura", molho: "Matriciana", cmv: 5.49, preco: 20.90 },
+            { produto: "Talharim - Beterraba", molho: "Matriciana", cmv: 5.49, preco: 20.90 },
+            { produto: "Talharim - Tradicional", molho: "Matriciana", cmv: 5.69, preco: 20.90 },
+            { produto: "Talharim - Couve", molho: "Matriciana", cmv: 12.53, preco: 20.90 },
+            { produto: "Talharim - Cenoura", molho: "Bolonhesa", cmv: 7.01, preco: 20.90 },
+            { produto: "Talharim - Beterraba", molho: "Bolonhesa", cmv: 7.01, preco: 20.90 },
+            { produto: "Talharim - Tradicional", molho: "Bolonhesa", cmv: 7.22, preco: 20.90 },
+            { produto: "Talharim - Couve", molho: "Bolonhesa", cmv: 14.05, preco: 20.90 },
+            { produto: "Talharim - Cenoura", molho: "4 Queijos", cmv: 5.85, preco: 20.90 },
+            { produto: "Talharim - Beterraba", molho: "4 Queijos", cmv: 5.85, preco: 20.90 },
+            { produto: "Talharim - Tradicional", molho: "4 Queijos", cmv: 6.05, preco: 20.90 },
+            { produto: "Talharim - Couve", molho: "4 Queijos", cmv: 12.89, preco: 20.90 },
+
+            { produto: "Ravioli - Carne assada", molho: "Bechamel", cmv: 8.33, preco: 25.90 },
+            { produto: "Ravioli - 4 Queijos", molho: "Bechamel", cmv: 8.66, preco: 25.90 },
+            { produto: "Ravioli - Beterraba", molho: "Bechamel", cmv: 6.95, preco: 25.90 },
+            { produto: "Ravioli - Abóbora", molho: "Bechamel", cmv: 9.99, preco: 25.90 },
+            { produto: "Ravioli - Linguiça", molho: "Bechamel", cmv: 7.17, preco: 25.90 },
+            { produto: "Ravioli - Carne assada", molho: "Tomate", cmv: 8.77, preco: 25.90 },
+            { produto: "Ravioli - 4 Queijos", molho: "Tomate", cmv: 9.10, preco: 25.90 },
+            { produto: "Ravioli - Beterraba", molho: "Tomate", cmv: 7.38, preco: 25.90 },
+            { produto: "Ravioli - Abóbora", molho: "Tomate", cmv: 10.43, preco: 25.90 },
+            { produto: "Ravioli - Linguiça", molho: "Tomate", cmv: 7.60, preco: 25.90 },
+            { produto: "Ravioli - Carne assada", molho: "Matriciana", cmv: 9.50, preco: 25.90 },
+            { produto: "Ravioli - 4 Queijos", molho: "Matriciana", cmv: 9.83, preco: 25.90 },
+            { produto: "Ravioli - Beterraba", molho: "Matriciana", cmv: 8.11, preco: 25.90 },
+            { produto: "Ravioli - Abóbora", molho: "Matriciana", cmv: 11.16, preco: 25.90 },
+            { produto: "Ravioli - Linguiça", molho: "Matriciana", cmv: 8.34, preco: 25.90 },
+            { produto: "Ravioli - Carne assada", molho: "Bolonhesa", cmv: 11.03, preco: 25.90 },
+            { produto: "Ravioli - 4 Queijos", molho: "Bolonhesa", cmv: 11.36, preco: 25.90 },
+            { produto: "Ravioli - Beterraba", molho: "Bolonhesa", cmv: 9.64, preco: 25.90 },
+            { produto: "Ravioli - Abóbora", molho: "Bolonhesa", cmv: 12.69, preco: 25.90 },
+            { produto: "Ravioli - Linguiça", molho: "Bolonhesa", cmv: 9.86, preco: 25.90 },
+            { produto: "Ravioli - Carne assada", molho: "4 Queijos", cmv: 9.86, preco: 25.90 },
+            { produto: "Ravioli - 4 Queijos", molho: "4 Queijos", cmv: 10.19, preco: 25.90 },
+            { produto: "Ravioli - Beterraba", molho: "4 Queijos", cmv: 8.48, preco: 25.90 },
+            { produto: "Ravioli - Abóbora", molho: "4 Queijos", cmv: 11.52, preco: 25.90 },
+            { produto: "Ravioli - Linguiça", molho: "4 Queijos", cmv: 8.70, preco: 25.90 },
+
+            { produto: "Nhoque - Asterix", molho: "Bechamel", cmv: 4.19, preco: 20.90 },
+            { produto: "Nhoque - Batata doce", molho: "Bechamel", cmv: 4.46, preco: 20.90 },
+            { produto: "Nhoque - Asterix", molho: "Tomate", cmv: 4.63, preco: 20.90 },
+            { produto: "Nhoque - Batata doce", molho: "Tomate", cmv: 4.90, preco: 20.90 },
+            { produto: "Nhoque - Asterix", molho: "Matriciana", cmv: 5.36, preco: 20.90 },
+            { produto: "Nhoque - Batata doce", molho: "Matriciana", cmv: 5.63, preco: 20.90 },
+            { produto: "Nhoque - Asterix", molho: "Bolonhesa", cmv: 6.89, preco: 20.90 },
+            { produto: "Nhoque - Batata doce", molho: "Bolonhesa", cmv: 7.16, preco: 20.90 },
+            { produto: "Nhoque - Asterix", molho: "4 Queijos", cmv: 5.72, preco: 20.90 },
+            { product: "Nhoque - Batata doce", molho: "4 Queijos", cmv: 5.99, preco: 20.90 },
+
+            { produto: "Lasanha - Bolonhesa", molho: "Padrão", cmv: 11.38, preco: 29.90 },
+            { produto: "Lasanha - Pernil", molho: "Padrão", cmv: 10.18, preco: 29.90 },
+            { produto: "Lasanha - Frango", molho: "Padrão", cmv: 14.79, preco: 29.90 },
+
+            { produto: "Rondelli - Bacon com Mussarela", molho: "Tomate", cmv: 12.42, preco: 25.90 },
+            { produto: "Rondelli - Bacon com Mussarela", molho: "Bechamel", cmv: 11.98, preco: 25.90 },
+            { produto: "Rondelli - Bacon com Mussarela", molho: "Matriciana", cmv: 13.15, preco: 25.90 },
+            { produto: "Rondelli - Bacon com Mussarela", molho: "Bolonhesa", cmv: 14.67, preco: 25.90 },
+            { produto: "Rondelli - Bacon com Mussarela", molho: "4 Queijos", cmv: 13.51, preco: 25.90 },
+            { produto: "Rondelli - 4 Queijos", molho: "Tomate", cmv: 9.10, preco: 25.90 },
+            { produto: "Rondelli - 4 Queijos", molho: "Bechamel", cmv: 8.66, preco: 25.90 },
+            { produto: "Rondelli - 4 Queijos", molho: "Matriciana", cmv: 9.83, preco: 25.90 },
+            { produto: "Rondelli - 4 Queijos", molho: "Bolonhesa", cmv: 11.36, preco: 25.90 },
+            { produto: "Rondelli - 4 Queijos", molho: "4 Queijos", cmv: 10.19, preco: 25.90 }
+        ];
+
+        let vendas = JSON.parse(localStorage.getItem('vendas_massa')) || [];
+        let charts = {};
+
+        document.getElementById('dataVenda').valueAsDate = new Date();
+
+        function popularProdutos() {
+            const select = document.getElementById('produtoSelect');
+            const produtosUnicos = [...new Set(baseProdutos.map(item => item.produto))];
+            
+            produtosUnicos.forEach(prod => {
+                let opt = document.createElement('option');
+                opt.value = prod;
+                opt.textContent = prod;
+                select.appendChild(opt);
+            });
+        }
+
+        function atualizarMolhos() {
+            const produtoSelecionado = document.getElementById('produtoSelect').value;
+            const molhoSelect = document.getElementById('molhoSelect');
+            molhoSelect.innerHTML = '<option value="">Selecione o molho...</option>';
+
+            const molhosDisponiveis = baseProdutos.filter(item => item.produto === produtoSelecionado);
+            molhosDisponiveis.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item.molho;
+                opt.textContent = item.molho;
+                molhoSelect.appendChild(opt);
+            });
+            document.getElementById('cardResumoItem').classList.add('hidden');
+        }
+
+        function atualizarInfoProduto() {
+            const produto = document.getElementById('produtoSelect').value;
+            const molho = document.getElementById('molhoSelect').value;
+            if (!produto || !molho) return;
+
+            const item = baseProdutos.find(i => i.produto === produto && i.molho === molho);
+            if (item) {
+                document.getElementById('lblPreco').textContent = `R$ ${item.preco.toFixed(2)}`;
+                document.getElementById('lblCmv').textContent = `R$ ${item.cmv.toFixed(2)}`;
+                document.getElementById('lblLucro').textContent = `R$ ${(item.preco - item.cmv).toFixed(2)}`;
+                document.getElementById('cardResumoItem').classList.remove('hidden');
+            }
+        }
+
+        function registrarVenda(event) {
+            event.preventDefault();
+            const produto = document.getElementById('produtoSelect').value;
+            const molho = document.getElementById('molhoSelect').value;
+            const data = document.getElementById('dataVenda').value;
+
+            const dadosItem = baseProdutos.find(i => i.produto === produto && i.molho === molho);
+            if (!dadosItem) return;
+
+            const novaVenda = {
+                id: Date.now(),
+                produto,
+                molho,
+                data,
+                preco: dadosItem.preco,
+                cmv: dadosItem.cmv,
+                lucro: dadosItem.preco - dadosItem.cmv
+            };
+
+            vendas.push(novaVenda);
+            localStorage.setItem('vendas_massa', JSON.stringify(vendas));
+
+            document.getElementById('vendaForm').reset();
+            document.getElementById('dataVenda').valueAsDate = new Date();
+            document.getElementById('cardResumoItem').classList.add('hidden');
+            atualizarDashboard();
+        }
+
+        function exportarDados() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(vendas, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `backup_vendas_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function atualizarDashboard() {
+            const totalFaturamento = vendas.reduce((acc, v) => acc + v.preco, 0);
+            const totalCmv = vendas.reduce((acc, v) => acc + v.cmv, 0);
+            const totalLucro = vendas.reduce((acc, v) => acc + v.lucro, 0);
+
+            document.getElementById('totalFaturamento').textContent = `R$ ${totalFaturamento.toFixed(2)}`;
+            document.getElementById('totalCmv').textContent = `R$ ${totalCmv.toFixed(2)}`;
+            document.getElementById('totalLucro').textContent = `R$ ${totalLucro.toFixed(2)}`;
+
+            const tbody = document.getElementById('tabelaHistorico');
+            tbody.innerHTML = '';
+            if (vendas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Nenhuma venda registrada até o momento.</td></tr>`;
+            } else {
+                [...vendas].reverse().slice(0, 15).forEach(v => {
+                    let tr = document.createElement('tr');
+                    tr.className = "theme-hover-bg transition";
+                    tr.innerHTML = `
+                        <td class="p-3">${v.data.split('-').reverse().join('/')}</td>
+                        <td class="p-3 font-medium text-slate-700">${v.produto}</td>
+                        <td class="p-3">${v.molho}</td>
+                        <td class="p-3 theme-secondary-text font-semibold">R$ ${v.preco.toFixed(2)}</td>
+                        <td class="p-3 text-rose-600">R$ ${v.cmv.toFixed(2)}</td>
+                        <td class="p-3 text-green-700 font-semibold">R$ ${v.lucro.toFixed(2)}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="excluirVenda(${v.id})" class="text-rose-400 hover:text-rose-600 p-1" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            const diasObj = {};
+            vendas.forEach(v => {
+                if (!diasObj[v.data]) diasObj[v.data] = { faturamento: 0, cmv: 0, lucro: 0 };
+                diasObj[v.data].faturamento += v.preco;
+                diasObj[v.data].cmv += v.cmv;
+                diasObj[v.data].lucro += v.lucro;
+            });
+
+            const diasOrdenados = Object.keys(diasObj).sort();
+            const dadosFaturamento = diasOrdenados.map(d => diasObj[d].faturamento);
+            const dadosCmv = diasOrdenados.map(d => diasObj[d].cmv);
+            const dadosLucro = diasOrdenados.map(d => diasObj[d].lucro);
+            const diasLabels = diasOrdenados.map(d => d.split('-').reverse().join('/'));
+
+            const rootStyles = getComputedStyle(document.documentElement);
+            const colorVenda = rootStyles.getPropertyValue('--color-venda').trim();
+            const colorCmv = rootStyles.getPropertyValue('--color-cmv').trim();
+            const colorLucro = rootStyles.getPropertyValue('--color-lucro').trim();
+
+            renderizarGrafico('graficoVendas', 'line', diasLabels, dadosFaturamento, colorVenda, 'Vendas (R$)');
+            renderizarGrafico('graficoCmv', 'line', diasLabels, dadosCmv, colorCmv, 'CMV (R$)');
+            renderizarGrafico('graficoLucro', 'bar', diasLabels, dadosLucro, colorLucro, 'Lucro (R$)');
+
+            const prodCount = {};
+            vendas.forEach(v => prodCount[v.produto] = (prod
