@@ -11,14 +11,13 @@
     <!-- FontAwesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Paleta Verde Musgo da Marca */
         :root {
-            --musgo-primary: #556B2F;   /* Verde Musgo Principal */
-            --musgo-dark: #3F4F22;      /* Verde Musgo Escuro (Hover / Títulos) */
-            --musgo-light: #F4F6F0;     /* Fundo suave / Cards */
-            --color-venda: #556B2F;     /* Cor dos gráficos de Vendas */
-            --color-cmv: #b91c1c;       /* Vermelho de custo */
-            --color-lucro: #15803d;     /* Verde de lucro */
+            --musgo-primary: #556B2F;   
+            --musgo-dark: #3F4F22;      
+            --musgo-light: #F4F6F0;     
+            --color-venda: #556B2F;     
+            --color-cmv: #b91c1c;       
+            --color-lucro: #15803d;     
         }
         .theme-primary-bg { background-color: #556B2F; }
         .theme-primary-bg:hover { background-color: #3F4F22; }
@@ -40,7 +39,7 @@
                 </h1>
                 <p class="text-stone-100 text-sm">Registre suas vendas e acompanhe seus resultados.</p>
             </div>
-            <button onclick="exportarDados()" class="bg-[#3F4F22] hover:bg-[#2c3717] text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow">
+            <button onclick="exportarDados()" class="bg-[#3F4F22] hover:bg-[#2c3717] text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow cursor-pointer">
                 <i class="fa-solid fa-download mr-1"></i> Baixar Backup JSON
             </button>
         </div>
@@ -48,9 +47,8 @@
 
     <main class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- Coluna Esquerda: Formulário e Guia do GitHub -->
+        <!-- Coluna Esquerda: Formulário -->
         <div class="space-y-6">
-            <!-- Formulário -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                 <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-cart-plus theme-primary-text"></i> Nova Venda
@@ -87,39 +85,33 @@
                     </button>
                 </form>
             </div>
-
-            <!-- Instruções GitHub Pages -->
-            <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 text-xs text-stone-700 space-y-2">
-                <h3 class="font-bold flex items-center gap-1.5 theme-secondary-text text-sm">
-                    <i class="fa-brands fa-github"></i> Dica de Atualização:
-                </h3>
-                <p>Basta substituir o código no seu arquivo <code>index.html</code> no GitHub por este novo código atualizado. O histórico salvo continuará intacto no seu navegador!</p>
-            </div>
         </div>
 
         <!-- Coluna Direita: Dashboard e Rankings -->
         <div class="lg:col-span-2 space-y-6">
             
-            <!-- Cards de Resumo Geral -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Faturamento Total</span>
-                    <h3 id="totalFaturamento" class="text-2xl font-bold theme-secondary-text mt-1">R$ 0,00</h3>
+            <!-- Cards de Resumo Geral e Mensal -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Geral -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider block">Acumulado Geral</span>
+                    <div class="flex justify-between text-xs"><span>Faturamento:</span> <strong id="totalFaturamento" class="text-slate-700">R$ 0,00</strong></div>
+                    <div class="flex justify-between text-xs"><span>CMV Total:</span> <strong id="totalCmv" class="text-rose-600">R$ 0,00</strong></div>
+                    <div class="flex justify-between text-xs pt-1 border-t border-slate-100"><span>Lucro Líquido:</span> <strong id="totalLucro" class="text-green-700 font-bold">R$ 0,00</strong></div>
                 </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Custo Total (CMV)</span>
-                    <h3 id="totalCmv" class="text-2xl font-bold text-rose-600 mt-1">R$ 0,00</h3>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Lucro Líquido Total</span>
-                    <h3 id="totalLucro" class="text-2xl font-bold text-green-700 mt-1">R$ 0,00</h3>
+                <!-- Mensal -->
+                <div class="theme-light-bg p-5 rounded-2xl border border-[#d4dcce] shadow-sm space-y-2">
+                    <span class="text-xs font-medium theme-secondary-text uppercase tracking-wider block" id="mesAtualLabel">Mês Atual</span>
+                    <div class="flex justify-between text-xs"><span>Faturamento do Mês:</span> <strong id="mesFaturamento" class="text-slate-700">R$ 0,00</strong></div>
+                    <div class="flex justify-between text-xs"><span>CMV do Mês:</span> <strong id="mesCmv" class="text-rose-600">R$ 0,00</strong></div>
+                    <div class="flex justify-between text-xs pt-1 border-t border-[#d4dcce]"><span>Lucro Líquido do Mês:</span> <strong id="mesLucro" class="text-green-700 font-bold">R$ 0,00</strong></div>
                 </div>
             </div>
 
             <!-- Gráficos -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-6">
                 <h2 class="text-lg font-bold text-slate-700 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-line theme-primary-text"></i> Desempenho Diário
+                    <i class="fa-solid fa-chart-line theme-primary-text"></i> Desempenho Diário e Mensal
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -131,9 +123,15 @@
                         <div class="relative h-48"><canvas id="graficoCmv"></canvas></div>
                     </div>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-slate-500 mb-2">Lucro Líquido Diário (R$)</p>
-                    <div class="relative h-48"><canvas id="graficoLucro"></canvas></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 mb-2">Lucro Líquido Diário (R$)</p>
+                        <div class="relative h-48"><canvas id="graficoLucro"></canvas></div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 mb-2">Lucro Líquido por Mês (R$)</p>
+                        <div class="relative h-48"><canvas id="graficoLucroMes"></canvas></div>
+                    </div>
                 </div>
             </div>
 
@@ -285,6 +283,7 @@
 
         function popularProdutos() {
             const select = document.getElementById('produtoSelect');
+            select.innerHTML = '<option value="">Selecione o produto...</option>';
             const produtosUnicos = [...new Set(baseProdutos.map(item => item.produto))];
             
             produtosUnicos.forEach(prod => {
@@ -349,6 +348,7 @@
             document.getElementById('vendaForm').reset();
             document.getElementById('dataVenda').valueAsDate = new Date();
             document.getElementById('cardResumoItem').classList.add('hidden');
+            atualizarMolhos();
             atualizarDashboard();
         }
 
@@ -369,6 +369,7 @@
         }
 
         function atualizarDashboard() {
+            // Totais gerais
             const totalFaturamento = vendas.reduce((acc, v) => acc + v.preco, 0);
             const totalCmv = vendas.reduce((acc, v) => acc + v.cmv, 0);
             const totalLucro = vendas.reduce((acc, v) => acc + v.lucro, 0);
@@ -377,6 +378,22 @@
             document.getElementById('totalCmv').textContent = `R$ ${totalCmv.toFixed(2)}`;
             document.getElementById('totalLucro').textContent = `R$ ${totalLucro.toFixed(2)}`;
 
+            // Totais do mês atual
+            const dataHoje = new Date();
+            const anoMesAtual = dataHoje.toISOString().slice(0, 7); // YYYY-MM
+            const nomeMesAtual = dataHoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+            document.getElementById('mesAtualLabel').textContent = `Mês Atual (${nomeMesAtual.charAt(0).toUpperCase() + nomeMesAtual.slice(1)})`;
+
+            const vendasMes = vendas.filter(v => v.data.startsWith(anoMesAtual));
+            const mesFaturamento = vendasMes.reduce((acc, v) => acc + v.preco, 0);
+            const mesCmv = vendasMes.reduce((acc, v) => acc + v.cmv, 0);
+            const mesLucro = vendasMes.reduce((acc, v) => acc + v.lucro, 0);
+
+            document.getElementById('mesFaturamento').textContent = `R$ ${mesFaturamento.toFixed(2)}`;
+            document.getElementById('mesCmv').textContent = `R$ ${mesCmv.toFixed(2)}`;
+            document.getElementById('mesLucro').textContent = `R$ ${mesLucro.toFixed(2)}`;
+
+            // Tabela de Histórico
             const tbody = document.getElementById('tabelaHistorico');
             tbody.innerHTML = '';
             if (vendas.length === 0) {
@@ -393,13 +410,14 @@
                         <td class="p-3 text-rose-600">R$ ${v.cmv.toFixed(2)}</td>
                         <td class="p-3 text-green-700 font-semibold">R$ ${v.lucro.toFixed(2)}</td>
                         <td class="p-3 text-center">
-                            <button onclick="excluirVenda(${v.id})" class="text-rose-400 hover:text-rose-600 p-1" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="excluirVenda(${v.id})" class="text-rose-400 hover:text-rose-600 p-1 cursor-pointer" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     `;
                     tbody.appendChild(tr);
                 });
             }
 
+            // Agrupamentos por Dia
             const diasObj = {};
             vendas.forEach(v => {
                 if (!diasObj[v.data]) diasObj[v.data] = { faturamento: 0, cmv: 0, lucro: 0 };
@@ -414,10 +432,25 @@
             const dadosLucro = diasOrdenados.map(d => diasObj[d].lucro);
             const diasLabels = diasOrdenados.map(d => d.split('-').reverse().join('/'));
 
+            // Agrupamentos por Mês
+            const mesesObj = {};
+            vendas.forEach(v => {
+                const mesKey = v.data.slice(0, 7); // YYYY-MM
+                if (!mesesObj[mesKey]) mesesObj[mesKey] = 0;
+                mesesObj[mesKey] += v.lucro;
+            });
+            const mesesOrdenados = Object.keys(mesesObj).sort();
+            const dadosLucroMes = mesesOrdenados.map(m => mesesObj[m]);
+            const mesesLabels = mesesOrdenados.map(m => {
+                const [ano, mes] = m.split('-');
+                return `${mes}/${ano}`;
+            });
+
             const rootStyles = getComputedStyle(document.documentElement);
             renderizarGrafico('graficoVendas', 'line', diasLabels, dadosFaturamento, rootStyles.getPropertyValue('--color-venda').trim(), 'Vendas (R$)');
             renderizarGrafico('graficoCmv', 'line', diasLabels, dadosCmv, rootStyles.getPropertyValue('--color-cmv').trim(), 'CMV (R$)');
             renderizarGrafico('graficoLucro', 'bar', diasLabels, dadosLucro, rootStyles.getPropertyValue('--color-lucro').trim(), 'Lucro (R$)');
+            renderizarGrafico('graficoLucroMes', 'bar', mesesLabels, dadosLucroMes, '#3f4f22', 'Lucro Mensal (R$)');
 
             // Top Produtos
             const prodCount = {};
@@ -426,7 +459,7 @@
             const ulProd = document.getElementById('listTopProdutos');
             ulProd.innerHTML = topProdutos.length ? '' : '<li class="pt-1 text-slate-400 italic">Nenhuma venda registrada</li>';
             topProdutos.forEach(([prod, qtd], idx) => {
-                ulProd.innerHTML += `<li class="flex justify-between pt-1"><span>${idx+1}. ${prod}</span> <strong class="text-slate-700">${qtd} un.</strong></li>`;
+                ulProd.innerHTML += `<li class="flex justify-between pt-1"><span>${idx+1}.${prod}</span> <strong class="text-slate-700">${qtd} un.</strong></li>`;
             });
 
             // Top Molhos
@@ -436,7 +469,7 @@
             const ulMolho = document.getElementById('listTopMolhos');
             ulMolho.innerHTML = topMolhos.length ? '' : '<li class="pt-1 text-slate-400 italic">Nenhuma venda registrada</li>';
             topMolhos.forEach(([molho, qtd], idx) => {
-                ulMolho.innerHTML += `<li class="flex justify-between pt-1"><span>${idx+1}. ${molho}</span> <strong class="text-slate-700">${qtd} un.</strong></li>`;
+                ulMolho.innerHTML += `<li class="flex justify-between pt-1"><span>${idx+1}.${molho}</span> <strong class="text-slate-700">${qtd} un.</strong></li>`;
             });
 
             // Top 1 Dia
@@ -447,47 +480,4 @@
                 let melhorDia = diasOrdenados.reduce((max, d) => diasObj[d].faturamento > diasObj[max].faturamento ? d : max);
                 topDiaCard.innerHTML = `
                     <div class="theme-light-bg border border-[#d4dcce] p-3 rounded-xl space-y-1">
-                        <strong class="theme-secondary-text text-sm block"><i class="fa-solid fa-trophy mr-1"></i> ${melhorDia.split('-').reverse().join('/')}</strong>
-                        <div class="flex justify-between text-slate-600"><span>Faturamento:</span> <strong class="theme-secondary-text">R$ ${diasObj[melhorDia].faturamento.toFixed(2)}</strong></div>
-                        <div class="flex justify-between text-slate-600"><span>Lucro:</span> <strong class="text-green-700">R$ ${diasObj[melhorDia].lucro.toFixed(2)}</strong></div>
-                    </div>
-                `;
-            }
-        }
-
-        function renderizarGrafico(canvasId, tipo, labels, data, cor, labelDataset) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            if (charts[canvasId]) charts[canvasId].destroy();
-
-            charts[canvasId] = new Chart(ctx, {
-                type: tipo,
-                data: {
-                    labels: labels.length ? labels : ['Início'],
-                    datasets: [{
-                        label: labelDataset,
-                        data: data.length ? data : [0],
-                        borderColor: cor,
-                        backgroundColor: cor + (tipo === 'bar' ? '' : '22'),
-                        borderWidth: 2,
-                        fill: tipo === 'line',
-                        tension: 0.3,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        popularProdutos();
-        atualizarDashboard();
-    </script>
-</body>
-</html>
+                        <strong class="theme-secondary-
